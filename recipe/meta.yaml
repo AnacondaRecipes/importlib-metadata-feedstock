@@ -1,43 +1,61 @@
-{% set name = "importlib-metadata" %}
-{% set version = "0.19" %}
+{% set version = "7.0.1" %}
 
 package:
-  name: "{{ name|lower }}"
-  version: "{{ version }}"
+  name: importlib-metadata
+  version: {{ version }}
 
 source:
-  url: https://files.pythonhosted.org/packages/27/49/58d50a592d99a6bf58c4c1b02b203a48357a74e33922a9d021fda07d4ce3/importlib_metadata-{{ version }}.tar.gz
-  sha256: 23d3d873e008a513952355379d93cbcab874c58f4f034ff657c7a87422fa64e8
+  url: https://pypi.io/packages/source/i/importlib_metadata/importlib_metadata-{{ version }}.tar.gz
+  sha256: f238736bb06590ae52ac1fab06a3a9ef1d8dce2b7a35b5ab329371d6c8f5d2cc
 
 build:
   number: 0
-  script: "{{ PYTHON }} -m pip install . --no-deps --ignore-installed -vv "
+  noarch: python
 
-requirements:
-  host:
-    - pip
-    - python
-    - setuptools_scm
-  run:
-    - python
-    - zipp
-    - configparser
-    - contextlib2
-    - pathlib2
+outputs:
+  - name: importlib-metadata
+    script: build_base.sh
+    requirements:
+      build:
+        - python                                 # [build_platform != target_platform]
+        - cross-python_{{ target_platform }}     # [build_platform != target_platform]
+      host:
+        - python >=3.8
+        - pip
+        - setuptools_scm !=6.1.0
+      run:
+        - python >=3.8
+        - zipp >=0.5
+    test:
+      requires:
+        - pip
+      commands:
+        - pip check
+      imports:
+        - importlib_metadata
 
-test:
-  imports:
-    - importlib_metadata
+  - name: importlib_metadata
+    build:
+      noarch: generic
+    requirements:
+      run:
+        - {{ pin_subpackage('importlib-metadata', max_pin="x.x.x") }}
+    test:
+      imports:
+        - importlib_metadata
 
 about:
-  home: https://gitlab.com/python-devs/importlib_metadata
-  license: Apache Software
+  home: https://github.com/python/importlib_metadata
+  license: Apache-2.0
   license_family: APACHE
   license_file: LICENSE
-  summary: Summary of the package
-  doc_url: https://importlib_metadata.readthedocs.io
-  dev_url: https://gitlab.com/python-devs/importlib_metadata
+  summary: A library to access the metadata for a Python package
 
 extra:
+  anaconda-services:
+    reason: for power10 opence repo build
   recipe-maintainers:
-    - bgruening
+    - ianaobi
+    - nehaljwani
+    - nicoddemus
+    - marcelotrevisani
