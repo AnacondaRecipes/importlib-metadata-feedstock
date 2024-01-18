@@ -23,6 +23,7 @@ outputs:
         - python >=3.8
         - pip
         - setuptools_scm !=6.1.0
+        - wheel
       run:
         - python >=3.8
         - zipp >=0.5
