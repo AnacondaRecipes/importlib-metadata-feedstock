@@ -22,11 +22,13 @@ outputs:
       host:
         - python >=3.8
         - pip
-        - setuptools_scm !=6.1.0
+#        - setuptools_scm !=6.1.0
+        - setuptools_scm 
         - wheel
       run:
         - python >=3.8
-        - zipp >=0.5
+#        - zipp >=0.5
+        - zipp 
     test:
       requires:
         - pip
@@ -39,7 +41,10 @@ outputs:
     build:
       noarch: generic
     requirements:
+      host:
+        - python >=3.8
       run:
+        - python >=3.8
         - {{ pin_subpackage('importlib-metadata', max_pin="x.x.x") }}
     test:
       imports:
